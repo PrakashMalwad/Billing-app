@@ -1,0 +1,144 @@
+#Prakash Vijayan Malwad
+from tkinter import *
+from tkinter import ttk 
+from tkinter import messagebox
+import win32api
+import win32print
+import os
+import string
+
+rd=Tk()
+rd.title("Billing Application")
+#Mutable Variable Used
+Name=StringVar()
+mob=StringVar()
+amob=StringVar()
+address=StringVar()
+#mutable for size of pizza
+size_var=StringVar(value='Select a Size')
+
+type_var =StringVar()
+
+top1_var=IntVar()
+top2_var=IntVar()
+top3_var=IntVar()
+top4_var=IntVar()
+top5_var=IntVar()
+
+#Size of root window
+rd.geometry("720x440")
+rd.resizable(0, 0)  
+rd.configure(bg="#03001C")
+#This Function will set the appropriate values to var
+
+
+
+    
+
+    
+def ShowDetails():
+    
+    #Dictionary Which holds the Var as key and value as prize
+    size_cost = {"Large (250)": 250, "Regular (200)": 200, "Medium (150)": 150, "Small (100)": 100}
+    type_cost = {"Veg (100)": 100, "Non-Veg (150)": 150}
+    topping_cost=0
+    addedtop=[]
+    if top1_var.get():
+        topping_cost+=50
+        addedtop.append("Extra Cheese (50)")
+    if top2_var.get():
+        topping_cost+=50
+        addedtop.append("Olive (50)")
+    if top3_var.get():
+        topping_cost+=50
+        addedtop.append("Pepperoni (50)")
+    if top4_var.get():
+        topping_cost+=50
+        addedtop.append("Onion (50)")
+    if top5_var.get():
+        topping_cost+=50
+        addedtop.append("Mushroom (50)")
+        
+    # To Calculate the total cost
+    total_cost = size_cost[size_var.get()] + type_cost[type_var.get()] + topping_cost
+    
+    # To Display Order Details in MessageBox
+    
+    message= f"Name: {Name_e1.get()}\nMobile No: {mob_e2.get()}\nAlternate Mobile No: {amob_e3.get()}\nAddress: {address_e4.get()}\nSize: {size_var.get()}\nType: {type_var.get()}\nToppings: {addedtop}\nTotal Cost: {total_cost}"
+    
+    messagebox.showinfo("Order Details", message)
+    current_time = os.popen('time /t').read().strip()
+    current_date = os.popen('date /t').read().strip()
+    current_time=current_time.replace(":","_")
+    file_path="F:\KC" +current_date+"_"+current_time+".txt"
+    with open(file_path, 'w+' ) as file1:
+        file1.write(message)
+        file_contents = file1.read()
+    # get the name of the default printer
+    default_printer = win32print.GetDefaultPrinter()
+    # Print the file contents to the default printer
+    win32api.ShellExecute(
+        0,
+        'print',
+        file_path,
+        f'/d:"{default_printer}"',
+        ".",
+        0
+    )
+#Creating Tab1 and its contains
+#Frame 1
+tab1=Frame(rd,bg="#B9F3E4") 
+la=Label(tab1,text="Krishna's Cafe",font=('Delicious Handrawn',25,'bold'),bg='#B9F3E4')
+la.pack(padx=5,fill='x')
+main1=LabelFrame(tab1,text="Enter Your Details",fg="#000000",bg="#B8E8FC",font=('alkatra', 10, 'bold'),height=400,width=300,relief="raise")
+
+#Labels for Customer Details
+l1=Label(main1,text="Name",font=('josefin sans', 10),bg="#B8E8FC").grid(row=0,sticky=W)
+l2=Label(main1,text="Mobile No.",font=('josefin sans', 10),bg="#B8E8FC").grid(row=1,sticky=W)
+l3=Label(main1,text="Alternate Mobile No.",font=('josefin sans', 10),bg="#B8E8FC").grid(row=2,sticky=W)
+l4=Label(main1,text="Address.",font=('josefin sans', 10),bg="#B8E8FC").grid(row=3,sticky=W)
+
+#Entries for Customer Details
+Name_e1=Entry(main1,borderwidth=3, relief="sunken",width=80)
+Name_e1.grid(row=0,column=1,sticky=E)
+mob_e2=Entry(main1,borderwidth=3, relief="sunken",width=80)
+mob_e2.grid(row=1,column=1,sticky=E)
+amob_e3=Entry(main1,borderwidth=3, relief="sunken",width=80)
+amob_e3.grid(row=2,column=1,sticky=E)
+address_e4=Entry(main1,borderwidth=3, relief="sunken",width=80)
+address_e4.grid(row=3,column=1,sticky=E)
+
+main1.pack(padx=3,pady=3)
+tab1.pack(fill='both')
+
+#Creating Tab2 and its contains
+#Frame 2
+tab2=Frame(rd,bg='#F9F5E7',relief="sunken")
+
+m2=LabelFrame(tab2,text="Customize Your Pizza",relief="raise")
+m2.pack(padx=4,pady=5,fill='both')
+
+typ=LabelFrame(m2,text="Pizza Type",relief="raise",bg='#B8E8FC',font=('alkatra', 10, 'bold'))
+typ.pack(padx=4,pady=5,fill='both')
+R1=Radiobutton(typ,text="Veg (100)",variable=type_var, value='Veg (100)',relief="ridge",font=('Times', 10,'bold')).grid(row=0)
+R2=Radiobutton(typ,text="Non-Veg (150)",variable=type_var, value='Non-Veg (150)',relief="ridge",font=('Times', 10,'bold')).grid(row=0,column=1)
+
+sz=LabelFrame(m2,text="Pizza Base Size",relief="raise",bg='#B8E8FC',font=('alkatra', 10, 'bold'))
+sz.pack(padx=4,pady=5,fill='both')
+size=["Large (250)","Regular (200)","Medium (150)","Small (100)"]
+sizeb=ttk.Combobox(sz,textvariable=size_var,values=size,width=30,font=('Times', 10,'bold')).pack(anchor=W)
+
+tp=LabelFrame(m2,text="Add Toppings",relief="raise",bg='#B8E8FC',font=('alkatra', 10, 'bold'))
+tp.pack(padx=4,pady=5,fill='both')
+
+Checkbutton(tp,text="Extra Cheese (50)",variable=top1_var,width=15,relief="sunken",font=('Times', 10,'bold')).grid(row=0,column=0,padx=3)
+Checkbutton(tp,text="Olive (50)",variable=top2_var,width=10,relief="sunken",font=('Times', 10,'bold')).grid(row=0,column=1,padx=3)
+Checkbutton(tp,text="Pepperoni (50)",variable=top3_var,width=15,relief="sunken",font=('Times', 10,'bold')).grid(row=0,column=2,padx=3)
+Checkbutton(tp,text="Onion (50)",variable=top4_var,width=10,relief="sunken",font=('Times', 10,'bold')).grid(row=0,column=3,padx=3)
+Checkbutton(tp,text="Mushroom (50)",variable=top5_var,width=15,relief="sunken",font=('Times', 10,'bold')).grid(row=0,column=4,padx=3)
+
+bt=Button(m2,text='Place Order',command=ShowDetails,font=('Times', 10,'bold')).pack(padx=4,pady=5)
+
+tab2.pack(fill='both')
+
+rd.mainloop() 
